@@ -1,27 +1,33 @@
 // ===============================
-// 🎵 Background Music Setup
+// 🎵 Music + Overlay Logic
 // ===============================
 const bgMusic = document.getElementById("bgMusic");
+const musicOverlay = document.getElementById("music-overlay");
 
-const startMusic = () => {
-  if (!bgMusic) return;
+if (musicOverlay && bgMusic) {
+  musicOverlay.addEventListener(
+    "click",
+    () => {
+      bgMusic.volume = 0.4;
+      bgMusic.play();
 
-  bgMusic.volume = 0;
-  bgMusic.play().catch(() => {});
+      // fade out overlay
+      musicOverlay.style.transition = "opacity 0.6s ease";
+      musicOverlay.style.opacity = "0";
 
-  let v = 0;
-  const fade = setInterval(() => {
-    v += 0.02;
-    bgMusic.volume = Math.min(v, 0.4);
-    if (v >= 0.4) clearInterval(fade);
-  }, 100);
-};
+      setTimeout(() => {
+        musicOverlay.style.display = "none";
+      }, 600);
+    },
+    { once: true }
+  );
+}
 
 // ===============================
 // 🎬 Animation Timeline
 // ===============================
 const animationTimeline = () => {
-  // Split chars for animation
+  // Split characters for animation
   const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
   const hbd = document.getElementsByClassName("wish-hbd")[0];
 
@@ -51,7 +57,6 @@ const animationTimeline = () => {
 
   tl.to(".container", 0.1, {
     visibility: "visible",
-    onComplete: startMusic, // 🎵 start music with animation
   })
     .from(".one", 0.7, { opacity: 0, y: 10 })
     .from(".two", 0.4, { opacity: 0, y: 10 })
@@ -88,62 +93,92 @@ const animationTimeline = () => {
     })
     .to(".idea-5 span", 0.7, { rotation: 90, x: 8 }, "+=0.4")
     .to(".idea-5", 0.7, { scale: 0.2, opacity: 0 }, "+=2")
-    .staggerFrom(".idea-6 span", 0.8, {
-      scale: 3,
-      opacity: 0,
-      rotation: 15,
-      ease: Expo.easeOut,
-    }, 0.2)
-    .staggerTo(".idea-6 span", 0.8, {
-      scale: 3,
-      opacity: 0,
-      rotation: -15,
-      ease: Expo.easeOut,
-    }, 0.2, "+=1")
-    .staggerFromTo(".baloons img", 2.5,
+    .staggerFrom(
+      ".idea-6 span",
+      0.8,
+      {
+        scale: 3,
+        opacity: 0,
+        rotation: 15,
+        ease: Expo.easeOut,
+      },
+      0.2
+    )
+    .staggerTo(
+      ".idea-6 span",
+      0.8,
+      {
+        scale: 3,
+        opacity: 0,
+        rotation: -15,
+        ease: Expo.easeOut,
+      },
+      0.2,
+      "+=1"
+    )
+    .staggerFromTo(
+      ".baloons img",
+      2.5,
       { opacity: 0.9, y: 1400 },
       { opacity: 1, y: -1000 },
       0.2
     )
-    .from(".girl-dp", 0.5, {
-      scale: 3.5,
-      opacity: 0,
-      x: 25,
-      y: -25,
-      rotationZ: -45,
-    }, "-=2")
+    .from(
+      ".girl-dp",
+      0.5,
+      {
+        scale: 3.5,
+        opacity: 0,
+        x: 25,
+        y: -25,
+        rotationZ: -45,
+      },
+      "-=2"
+    )
     .from(".hat", 0.5, {
       x: -100,
       y: 350,
       rotation: -180,
       opacity: 0,
     })
-    .staggerFrom(".wish-hbd span", 0.7, {
-      opacity: 0,
-      y: -50,
-      rotation: 150,
-      skewX: "30deg",
-      ease: Elastic.easeOut.config(1, 0.5),
-    }, 0.1)
-    .staggerFromTo(".wish-hbd span", 0.7,
+    .staggerFrom(
+      ".wish-hbd span",
+      0.7,
+      {
+        opacity: 0,
+        y: -50,
+        rotation: 150,
+        skewX: "30deg",
+        ease: Elastic.easeOut.config(1, 0.5),
+      },
+      0.1
+    )
+    .staggerFromTo(
+      ".wish-hbd span",
+      0.7,
       { scale: 1.4, rotationY: 150 },
       { scale: 1, rotationY: 0, color: "#ff69b4", ease: Expo.easeOut },
       0.1,
       "party"
     )
     .from(".wish h5", 0.5, { opacity: 0, y: 10, skewX: "-15deg" }, "party")
-    .staggerTo(".eight svg", 1.5, {
-      visibility: "visible",
-      opacity: 0,
-      scale: 80,
-      repeat: 3,
-      repeatDelay: 1.4,
-    }, 0.3)
+    .staggerTo(
+      ".eight svg",
+      1.5,
+      {
+        visibility: "visible",
+        opacity: 0,
+        scale: 80,
+        repeat: 3,
+        repeatDelay: 1.4,
+      },
+      0.3
+    )
     .to(".six", 0.5, { opacity: 0, y: 30, zIndex: "-1" })
     .staggerFrom(".nine p", 1, ideaTextTrans, 1.2)
     .to(".last-smile", 0.5, { rotation: 90 }, "+=1");
 
-  // 🔁 Replay Animation + Music
+  // 🔁 Replay animation + music
   const replyBtn = document.getElementById("replay");
   replyBtn.addEventListener("click", () => {
     bgMusic.currentTime = 0;
@@ -157,7 +192,7 @@ const animationTimeline = () => {
 // ===============================
 const fetchData = () => {
   fetch("customize.json")
-    .then((data) => data.json())
+    .then((res) => res.json())
     .then((data) => {
       Object.keys(data).forEach((key) => {
         if (data[key] !== "") {
@@ -174,11 +209,5 @@ const fetchData = () => {
 // ===============================
 // 🚀 Init
 // ===============================
-const resolveFetch = () => {
-  return new Promise((resolve) => {
-    fetchData();
-    resolve();
-  });
-};
-
-resolveFetch().then(animationTimeline);
+fetchData();
+animationTimeline();
