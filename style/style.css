@@ -292,6 +292,43 @@ body {
   .wish h5 {
     font-size: 1.4rem;
   }
+/* ===============================
+   🎵 Tap to Play Music Overlay
+================================ */
+#music-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+#music-overlay .overlay-content {
+  color: #fff;
+  font-size: 1.6rem;
+  padding: 20px 32px;
+  border-radius: 50px;
+  background: rgba(21, 161, 237, 0.95); /* matches your fake-btn color */
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 30px rgba(21, 161, 237, 0.7);
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
   .nine p {
     font-size: 1.5rem;
